@@ -1,32 +1,19 @@
 import pyhop
+from holidays_planner_helper import \
+    is_island_to, \
+    get_travel_data, \
+    places, \
+    plane_min_distance, \
+    taxi_max_distane, \
+    ferry_max_distance, \
+    state0, \
+    ferry_rate, \
+    plane_rate, \
+    taxi_rate
 
-plane_min_distance = 2000
-taxi_max_distane = 500
-ferry_max_distance = 2000
 
-def is_island_to(place_A_list , place_B_key):
-    for x in place_A_list:
-        if x == place_B_key:
-            return False
-    return True
-
-def get_travel_data(state, pos):
-    x = places[pos]
-    y = places[pos + 1]
-    data = { 
-        'from' : x,
-        'to' : y,
-        'dist' : state.dist[x][y] }
-    return data
-
-def ferry_rate(dist):
-    return (400 + 3 * dist)
-
-def plane_rate(dist):
-    return (500 + 5 * dist)
-
-def taxi_rate(dist):
-    return (10 + 1.7 *dist)
+#Operators
+#
 
 def go_by_ferry(state, me, x, y):
     if state.loc[me] == x:
@@ -77,8 +64,12 @@ pyhop.declare_operators(
     pay_taxi_driver,
     buy_ferry_ticket,
     go_by_ferry)
+
 print('')
 pyhop.print_operators()
+
+#Travel Methods
+#
 
 def travel_by_plane(state, me, x, y, pos):
     data = get_travel_data(state,pos)
@@ -124,46 +115,7 @@ pyhop.declare_methods('travel', travel_by_plane, travel_by_taxi, travel_by_ferry
 print('')
 pyhop.print_methods()
 
-state0 = pyhop.State('state0')
-state0.loc = { 'me' : 'Cracow' }
-state0.money = { 'me' : 120000 }
-state0.dist = { 
-    'Cracow' : { 'Cracow-Airport' : 20 },
-    'Cracow-Airport' : { 'Cayo Guilermo-Airport' :  7292.18, 'Cat Island-Airport' : 10063.81, 'Cracow' : 20 },
-    'Cayo Guilermo' : { 'Cayo Guilermo-Airport' :  20 , 'Long Island' : 2103.03 },
-    'Long Island' : { 'Cayo Guilermo' : 2103.03, 'Crooked Island' : 2020.21 },
-    'Crooked Island' : { 'Long Island' :  2020.21, 'Mayaguana' : 100.25 },
-    'Mayaguana' : { 'Crooked Island' : 100.25 , 'Rum Cay' : 230.31 },
-    'Rum Cay' : { 'Mayaguana' : 230.31, 'Cat Island' : 79.28 },
-    'Cat Island' : { 'Cat Island-Airport' : 20, 'Rum Cay' : 79.28 },
-    'Cat Island-Airport' : { 'Cracow-Airport' : 10063.81 },
-    'Cayo Guilermo-Airport' : { 'Cracow-Airport' : 7292.18, 'Cayo Guilermo' : 20 }
-    }
-state0.not_island_to = {
-    'Cracow' : ['Cracow-Airport'],
-    'Cracow-Airport' : ['Cracow'],
-    'Cayo Guilermo' : [ 'Cayo Guilermo-Airport'],
-    'Long Island' : [],
-    'Crooked Island' : [],
-    'Mayaguana' : [],
-    'Rum Cay' : [],
-    'Cat Island' : [ 'Cat Island-Airport'],
-    'Cat Island-Airport' : [ 'Cat Island' ],
-    'Cayo Guilermo-Airport' : [ 'Cayo Guilermo' ]
-    }
+#Call
+#
 
-places = [
-    'Cracow',
-    'Cracow-Airport',
-    'Cayo Guilermo-Airport',
-    'Cayo Guilermo', 
-    'Long Island',
-    'Crooked Island',
-    'Mayaguana',
-    'Rum Cay',
-    'Cat Island',
-    'Cat Island-Airport',
-    'Cracow-Airport',
-    'Cracow']
-
-pyhop.pyhop(state0, [('travel', 'me', places[0], places[-1], 0 )], verbose = 3)
+pyhop.pyhop(state0, [('travel', 'me', places[0], places[-1], 0 )], verbose = 2)
